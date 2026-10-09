@@ -10,7 +10,7 @@
  */
 const CONFIG = {
   STATION_ID: "9493",
-  API_PROXY_URL: "", // Example: "https://api.example.com/api/air-quality"
+  API_PROXY_URL: "https://ipu-aqi-proxy.veltrix-robotic.workers.dev/api/air-quality",
   DIRECT_API_TOKEN: "", // UNSAFE for public sites. Leave blank.
   REFRESH_INTERVAL_MS: 10 * 60 * 1000
 };
