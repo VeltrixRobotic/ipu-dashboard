@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="IPU UTHM IoT air quality dashboard for Batu Pahat, Johor.">
+  <title>IPU UTHM | Air Quality Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="IPU UTHM home">
+        <div class="brand-mark">IPU</div>
+        <div><strong>UTHM IoT</strong><span>ENVIRONMENTAL MONITORING</span></div>
+      </a>
+      <div class="top-actions">
+        <span class="live-indicator"><i></i><span id="connectionLabel">SETUP REQUIRED</span></span>
+        <button id="refreshBtn" class="refresh-btn" type="button" title="Refresh air quality data">↻ <span>Refresh</span></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <div class="eyebrow">AIR QUALITY MONITORING</div>
+          <h1>Batu Pahat <span class="location-pin">●</span></h1>
+          <p class="subheading">Johor, Malaysia <span class="dot-sep">·</span> IPU UTHM Dashboard</p>
+        </div>
+        <div class="updated-card">
+          <span class="muted-label">LAST UPDATED</span>
+          <strong id="updatedAt">Waiting for API setup</strong>
+          <span id="stationName" class="small-muted">AQICN station ID 9493</span>
+        </div>
+      </section>
+
+      <section id="setupNotice" class="notice" role="status">
+        <div class="notice-icon">i</div>
+        <div>
+          <strong>Live data is not connected yet</strong>
+          <p>Register for an AQICN API token, then configure the API proxy URL in <code>app.js</code>. No readings are being invented or displayed as live data.</p>
+          <a href="https://aqicn.org/data-platform/token/" target="_blank" rel="noopener noreferrer">Register for an AQICN token ↗</a>
+        </div>
+      </section>
+
+      <section class="overview-grid">
+        <article class="panel aqi-panel">
+          <div class="panel-heading">
+            <div><span class="muted-label">CURRENT AIR QUALITY INDEX</span><h2>Overall AQI</h2></div>
+            <span id="aqiBadge" class="status-pill status-unknown">NO DATA</span>
+          </div>
+          <div class="aqi-content">
+            <div id="aqiDial" class="aqi-dial">
+              <div class="dial-inner">
+                <span id="aqiValue" class="aqi-value">--</span>
+                <span class="aqi-caption">US AQI</span>
+              </div>
+            </div>
+            <div class="aqi-description">
+              <h3 id="aqiCategory">Waiting for readings</h3>
+              <p id="aqiAdvice">Once connected, the latest reported AQI and general guidance will appear here.</p>
+              <div class="source-line">Source: <a href="https://aqicn.org/city/malaysia/johor/batu-pahat/" target="_blank" rel="noopener noreferrer">AQICN Batu Pahat ↗</a></div>
+            </div>
+          </div>
+          <div class="aqi-scale" aria-label="AQI scale">
+            <span class="scale-good"></span><span class="scale-moderate"></span><span class="scale-sensitive"></span><span class="scale-unhealthy"></span><span class="scale-very"></span><span class="scale-hazardous"></span>
+          </div>
+          <div class="scale-labels"><span>Good</span><span>Moderate</span><span>Unhealthy</span><span>Hazardous</span></div>
+        </article>
+
+        <article class="panel pollutants-panel">
+          <div class="panel-heading">
+            <div><span class="muted-label">POLLUTANT BREAKDOWN</span><h2>Air pollutants</h2></div>
+            <span class="unit-label">Live station values</span>
+          </div>
+          <div class="pollutant-grid">
+            <div class="pollutant-card"><div class="pollutant-top"><span class="pollutant-symbol pm25">PM</span><span class="pollutant-name">PM2.5</span></div><strong id="pm25">--</strong><span class="pollutant-unit">µg/m³</span><div class="mini-track"><span id="barPm25"></span></div></div>
+            <div class="pollutant-card"><div class="pollutant-top"><span class="pollutant-symbol pm10">PM</span><span class="pollutant-name">PM10</span></div><strong id="pm10">--</strong><span class="pollutant-unit">µg/m³</span><div class="mini-track"><span id="barPm10"></span></div></div>
+            <div class="pollutant-card"><div class="pollutant-top"><span class="pollutant-symbol ozone">O₃</span><span class="pollutant-name">Ozone</span></div><strong id="o3">--</strong><span class="pollutant-unit">station units</span><div class="mini-track"><span id="barO3"></span></div></div>
+            <div class="pollutant-card"><div class="pollutant-top"><span class="pollutant-symbol no2">NO₂</span><span class="pollutant-name">Nitrogen dioxide</span></div><strong id="no2">--</strong><span class="pollutant-unit">station units</span><div class="mini-track"><span id="barNo2"></span></div></div>
+            <div class="pollutant-card"><div class="pollutant-top"><span class="pollutant-symbol so2">SO₂</span><span class="pollutant-name">Sulfur dioxide</span></div><strong id="so2">--</strong><span class="pollutant-unit">station units</span><div class="mini-track"><span id="barSo2"></span></div></div>
+            <div class="pollutant-card"><div class="pollutant-top"><span class="pollutant-symbol co">CO</span><span class="pollutant-name">Carbon monoxide</span></div><strong id="co">--</strong><span class="pollutant-unit">station units</span><div class="mini-track"><span id="barCo"></span></div></div>
+          </div>
+          <p class="footnote">Pollutants and units appear only when provided by the source. Raw concentration units can vary by pollutant.</p>
+        </article>
+      </section>
+
+      <section class="lower-grid">
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <div><span class="muted-label">RECENT OBSERVATIONS</span><h2>PM2.5 forecast</h2></div>
+            <span class="unit-label">Source-provided forecast / history only</span>
+          </div>
+          <div class="chart-wrap"><canvas id="aqiChart" aria-label="AQI trend chart" role="img"></canvas><div id="chartEmpty" class="chart-empty">Trend will appear if historical or forecast data is available from the configured source.</div></div>
+        </article>
+        <article class="panel weather-panel">
+          <div class="panel-heading"><div><span class="muted-label">LOCAL CONDITIONS</span><h2>Weather snapshot</h2></div><span class="weather-icon">☼</span></div>
+          <div class="weather-grid">
+            <div><span class="weather-label">Temperature</span><strong id="temperature">-- <small>°C</small></strong></div>
+            <div><span class="weather-label">Humidity</span><strong id="humidity">-- <small>%</small></strong></div>
+            <div><span class="weather-label">Pressure</span><strong id="pressure">-- <small>hPa</small></strong></div>
+            <div><span class="weather-label">Wind</span><strong id="wind">-- <small>m/s</small></strong></div>
+          </div>
+          <p class="footnote">Weather values are shown only if supplied by the station.</p>
+        </article>
+      </section>
+
+      <section class="disclaimer">
+        <strong>Data interpretation</strong>
+        <p>This dashboard reports source-provided observations and is not an official emergency alert system. AQI scales differ by provider and country. Follow Malaysian Department of Environment guidance for official local air quality advisories.</p>
+      </section>
+    </main>
+
+    <footer>
+      <div><strong>IPU UTHM</strong><span>Air Quality Monitoring Dashboard</span></div>
+      <div class="footer-links"><a href="https://aqicn.org/" target="_blank" rel="noopener noreferrer">World Air Quality Index Project</a><span>·</span><a href="https://aqicn.org/city/malaysia/johor/batu-pahat/" target="_blank" rel="noopener noreferrer">Batu Pahat source</a></div>
+    </footer>
+  </div>
+  <div id="toast" class="toast" aria-live="polite"></div>
+</body>
+</html>
