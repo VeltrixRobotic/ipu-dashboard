@@ -10,7 +10,7 @@
  */
 const CONFIG = {
   STATION_ID: "9493",
-  API_PROXY_URL: "", // Example: "https://api.example.com/api/air-quality"
+  API_PROXY_URL: "https://api.waqi.info/feed/@9493/?token=a686336884831eda450a72df4a46b37c05b57e49", // Example: "https://api.example.com/api/air-quality"
   DIRECT_API_TOKEN: "", // UNSAFE for public sites. Leave blank.
   REFRESH_INTERVAL_MS: 10 * 60 * 1000
 };
